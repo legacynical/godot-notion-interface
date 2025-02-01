@@ -1,0 +1,14 @@
+[gd_scene load_steps=2 format=3 uid="uid://cojfmel2gud0v"]
+
+[ext_resource type="Script" path="res://api manager/api_manager.gd" id="1_5d4bd"]
+
+[node name="APIManager" type="Node" node_paths=PackedStringArray("openai_http", "notion_http")]
+script = ExtResource("1_5d4bd")
+openai_http = NodePath("OpenAI")
+notion_http = NodePath("Notion")
+
+[node name="OpenAI" type="HTTPRequest" parent="."]
+
+[node name="Notion" type="HTTPRequest" parent="."]
+
+[connection signal="request_completed" from="OpenAI" to="." method="_on_open_ai_request_completed"]
