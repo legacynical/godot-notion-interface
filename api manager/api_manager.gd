@@ -21,26 +21,28 @@ var openai_model: PackedStringArray = [
 	"gpt-4o-mini-realtime-preview",
 	"gpt-4o-audio-preview"
 ]
-var selected_model = "gpt-4o-mini" # default to cheapest option 
+var selected_model = "gpt-4o-mini" # default to cheapest option, make the most out of my $5
 var max_completion_tokens: int = 1024
 var temperature: float = 0.5 # value between 0 and 2
 var store: bool = true # to store chat completions in dev dashboard
 var metadata: Dictionary = {
 	"application": "godot-notion-interface",
 	"version": "0.1.0-alpha"
-} # custom tags to filter in dev dashboard
-var messages: Array = []
-var prompt: String = ""
+}
+var system_prompt: String = ""
+var user_prompt: String = ""
+var messages: Array = [
+	{ "role": "system", "content": system_prompt }
+]
 
 func _ready() -> void:
-	# callGPT("Give me a monologue on how to manage focus on diverse topics.")
+	# callGPT("testing. respond with success.") -> Success.
 	pass
 	
-func callGPT(prompt) -> void:
-	messages.append({
-		"role": "user",
-		"content": prompt
-	})
+func callGPT(user_prompt) -> void:
+	messages.append(
+		{ "role": "user", "content": user_prompt }
+	)
 	
 	var body = JSON.stringify({
 		"model": selected_model,
