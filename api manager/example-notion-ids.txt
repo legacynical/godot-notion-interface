@@ -11,6 +11,6 @@ To do the same, create inside your root folder a ".notion-ids" file to easily ad
 
 [example]
 {
-  "EXPLORATION_LOG_PAGE_ID": "4qba22955v910h30e118u56irgfjy7ku",
-  "EXPLORATION_PATHS_DATABASE_ID": "xe311qiwa70987yh0s47ea4qh6zf5rf0"
+ 	"EXPLORATION_LOG_PAGE_ID": "4qba22955v910h30e118u56irgfjy7ku",
+ 	"EXPLORATION_PATHS_DATABASE_ID": "xe311qiwa70987yh0s47ea4qh6zf5rf0"
 }

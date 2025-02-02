@@ -6,6 +6,9 @@ extends Node
 var notion_api_key: String = OS.get_environment("NOTION_API_KEY")
 var notion_api_url: String = "https://api.notion.com/v1/"
 
+var notion_ids: Dictionary
+
+
 var openai_api_key: String = OS.get_environment("OPENAI_API_KEY")
 var openai_api_url: String = "https://api.openai.com/v1/chat/completions"
 var openai_headers: PackedStringArray = ["Content-Type: application/json", "Authorization: Bearer " + openai_api_key]
@@ -37,8 +40,27 @@ var messages: Array = [
 
 func _ready() -> void:
 	# callGPT("testing. respond with success.") -> Success.
+	load_notion_ids()
 	pass
+
+func load_notion_ids() -> void:
+	var file = FileAccess.open("res://.notion-ids", FileAccess.READ)
+	if file:
+		print(".notion-ids file found!")
+		var json = JSON.new()
+		var err = json.parse(file.get_as_text())
+		if err != OK:
+			print("[json parse error] check debugger for more info")
+			push_error("JSON parse error: %s" % json.get_error_message())
+			return		
+		notion_ids = json.data
+		print(notion_ids)
+		print("keys: ", notion_ids.keys())
+		print("values: ", notion_ids.values())
+	else:
+		push_error("couldn't find .notion-ids file in root folder!")
 	
+
 func callGPT(user_prompt) -> void:
 	messages.append(
 		{ "role": "user", "content": user_prompt }
