@@ -1,0 +1,16 @@
+Publically storing notion IDs isn't an issue as long as your API keys are securely stored 
+(like system env var) but just to be a little bit more careful with this public repo I'm going
+to add a separate .notion-ids file to untrack with .gitignore.
+
+To do the same, create inside your root folder a ".notion-ids" file to easily add/edit ID variables
+[.notion-ids]
+{
+	"{your-page-var-name}": "{your-notion-page-id}",
+	"{your-database-var-name}": "{your-notion-database-id}"
+}
+
+[example]
+{
+  "EXPLORATION_LOG_PAGE_ID": "4qba22955v910h30e118u56irgfjy7ku",
+  "EXPLORATION_PATHS_DATABASE_ID": "xe311qiwa70987yh0s47ea4qh6zf5rf0"
+}
