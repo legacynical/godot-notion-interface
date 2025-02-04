@@ -1,0 +1,18 @@
+[gd_scene load_steps=3 format=3 uid="uid://bpae3w56d4fkj"]
+
+[ext_resource type="Script" path="res://notion_page_renderer.gd" id="1_m48ab"]
+[ext_resource type="PackedScene" uid="uid://cojfmel2gud0v" path="res://api manager/api_manager.tscn" id="2_eyv1s"]
+
+[node name="NotionPageRenderer" type="Control" node_paths=PackedStringArray("api_manager")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_m48ab")
+api_manager = NodePath("APIManager")
+
+[node name="APIManager" parent="." instance=ExtResource("2_eyv1s")]
+
+[editable path="APIManager"]
