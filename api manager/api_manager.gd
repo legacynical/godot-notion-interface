@@ -3,15 +3,23 @@ extends Node
 @export var openai_http: HTTPRequest
 @export var notion_http: HTTPRequest
 
+
 var notion_api_key: String = OS.get_environment("NOTION_API_KEY")
 var notion_api_url: String = "https://api.notion.com/v1/"
-
 var notion_ids: Dictionary
+var notion_headers: PackedStringArray = [
+	"Content-Type: application/json", 
+	"Notion-Version: 2022-06-28", 
+	"Authorization: Bearer " + notion_api_key
+]
 
 
 var openai_api_key: String = OS.get_environment("OPENAI_API_KEY")
 var openai_api_url: String = "https://api.openai.com/v1/chat/completions"
-var openai_headers: PackedStringArray = ["Content-Type: application/json", "Authorization: Bearer " + openai_api_key]
+var openai_headers: PackedStringArray = [
+	"Content-Type: application/json", 
+	"Authorization: Bearer " + openai_api_key
+]
 var openai_model: PackedStringArray = [
 	"gpt-4o",
 	"chatgpt-4o-latest",
@@ -33,7 +41,6 @@ var metadata: Dictionary = {
 	"version": "0.1.0-alpha"
 }
 var system_prompt: String = ""
-var user_prompt: String = ""
 var messages: Array = [
 	{ "role": "system", "content": system_prompt }
 ]
@@ -41,7 +48,7 @@ var messages: Array = [
 func _ready() -> void:
 	# callGPT("testing. respond with success.") -> Success.
 	load_notion_ids()
-	pass
+	check_api_keys()
 
 func load_notion_ids() -> void:
 	var file = FileAccess.open("res://.notion-ids", FileAccess.READ)
@@ -52,7 +59,7 @@ func load_notion_ids() -> void:
 		if err != OK:
 			print("[json parse error] check debugger for more info")
 			push_error("JSON parse error: %s" % json.get_error_message())
-			return		
+			return
 		notion_ids = json.data
 		print(notion_ids)
 		print("keys: ", notion_ids.keys())
@@ -60,8 +67,8 @@ func load_notion_ids() -> void:
 	else:
 		push_error("couldn't find .notion-ids file in root folder!")
 	
-
-func callGPT(user_prompt) -> void:
+# sends a text completions request to openai (prompt, optional param model) defaults to gpt-4o-mini
+func request_open_ai_chat(user_prompt: String, selected_model: String = "gpt-4o-mini") -> void:
 	messages.append(
 		{ "role": "user", "content": user_prompt }
 	)
@@ -111,3 +118,12 @@ func _on_open_ai_request_completed(result: int, response_code: int, headers: Pac
 #	"code": "insufficient_quota" 
 #	} 
 # }
+
+func check_api_keys() -> void: # helps prevent spooky ghost errors
+	if notion_api_key == "":
+		push_error("Environment variable NOTION_API_KEY not set!")
+	if openai_api_key == "":
+		push_error("Environment variable OPENAI_API_KEY not set!")
+		
+func request_notion_retrieve_page(): # GET
+	pass
