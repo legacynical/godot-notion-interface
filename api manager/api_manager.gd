@@ -5,14 +5,13 @@ extends Node
 
 
 var notion_api_key: String = OS.get_environment("NOTION_API_KEY")
-var notion_api_url: String = "https://api.notion.com/v1/"
+var notion_api_url: String = "https://api.notion.com/v1/" # varies based on request type
 var notion_ids: Dictionary
 var notion_headers: PackedStringArray = [
 	"Content-Type: application/json", 
 	"Notion-Version: 2022-06-28", 
 	"Authorization: Bearer " + notion_api_key
 ]
-
 
 var openai_api_key: String = OS.get_environment("OPENAI_API_KEY")
 var openai_api_url: String = "https://api.openai.com/v1/chat/completions"
@@ -49,6 +48,9 @@ func _ready() -> void:
 	# callGPT("testing. respond with success.") -> Success.
 	load_notion_ids()
 	check_api_keys()
+	print("notion key: ", notion_api_key)
+	print("oai key: ", openai_api_key)
+	request_notion_retrieve_page(notion_ids["EXPLORATION_LOG_PAGE_ID"])
 
 func load_notion_ids() -> void:
 	var file = FileAccess.open("res://.notion-ids", FileAccess.READ)
@@ -119,11 +121,27 @@ func _on_open_ai_request_completed(result: int, response_code: int, headers: Pac
 #	} 
 # }
 
+# make sure to restart godot engine after setting an environment variable!
+# I also had to restart my PC for OS.get_environment() to properly read
 func check_api_keys() -> void: # helps prevent spooky ghost errors
 	if notion_api_key == "":
 		push_error("Environment variable NOTION_API_KEY not set!")
-	if openai_api_key == "":
+	elif openai_api_key == "":
 		push_error("Environment variable OPENAI_API_KEY not set!")
-		
-func request_notion_retrieve_page(): # GET
-	pass
+	else:
+		print("Environment keys loaded!")
+	
+func request_notion_retrieve_page(page_id: String): # GET
+	var endpoint_url: String = "https://api.notion.com/v1/pages/" + page_id
+	var send_request = notion_http.request(endpoint_url, notion_headers, HTTPClient.METHOD_GET)
+	if send_request != OK:
+		print("Send request failed! :( Error Code: " + str(send_request))
+
+func _on_notion_request_completed(result: int, response_code: int, headers: PackedStringArray, body: PackedByteArray) -> void:
+	var json = JSON.new()
+	var parse_error = json.parse(body.get_string_from_utf8())
+	if parse_error == OK:
+		var response = json.get_data()
+		print("Full response: \n", response)
+	else:
+		push_error('Parse JSON failed. Error code: ' + str(parse_error))

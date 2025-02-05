@@ -12,3 +12,4 @@ notion_http = NodePath("Notion")
 [node name="Notion" type="HTTPRequest" parent="."]
 
 [connection signal="request_completed" from="OpenAI" to="." method="_on_open_ai_request_completed"]
+[connection signal="request_completed" from="Notion" to="." method="_on_notion_request_completed"]
