@@ -48,8 +48,6 @@ func _ready() -> void:
 	# callGPT("testing. respond with success.") -> Success.
 	load_notion_ids()
 	check_api_keys()
-	print("notion key: ", notion_api_key)
-	print("oai key: ", openai_api_key)
 	#request_notion_retrieve_page(notion_ids["EXPLORATION_LOG_PAGE_ID"])
 	request_notion_retrieve_block_children(notion_ids["EXPLORATION_LOG_PAGE_ID"])
 
