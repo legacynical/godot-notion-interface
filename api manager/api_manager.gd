@@ -50,7 +50,8 @@ func _ready() -> void:
 	check_api_keys()
 	print("notion key: ", notion_api_key)
 	print("oai key: ", openai_api_key)
-	request_notion_retrieve_page(notion_ids["EXPLORATION_LOG_PAGE_ID"])
+	#request_notion_retrieve_page(notion_ids["EXPLORATION_LOG_PAGE_ID"])
+	request_notion_retrieve_block_children(notion_ids["EXPLORATION_LOG_PAGE_ID"])
 
 func load_notion_ids() -> void:
 	var file = FileAccess.open("res://.notion-ids", FileAccess.READ)
@@ -85,8 +86,7 @@ func request_open_ai_chat(user_prompt: String, selected_model: String = "gpt-4o-
 	})
 
 	var send_request = openai_http.request(openai_api_url, openai_headers, HTTPClient.METHOD_POST, body)
-	if send_request != OK:
-		print("Send request failed! :( Error Code: " + str(send_request))
+	check_request_error(send_request)
 
 func _on_open_ai_request_completed(result: int, response_code: int, headers: PackedStringArray, body: PackedByteArray) -> void:
 	var json = JSON.new()
@@ -134,8 +134,18 @@ func check_api_keys() -> void: # helps prevent spooky ghost errors
 func request_notion_retrieve_page(page_id: String): # GET
 	var endpoint_url: String = "https://api.notion.com/v1/pages/" + page_id
 	var send_request = notion_http.request(endpoint_url, notion_headers, HTTPClient.METHOD_GET)
+	check_request_error(send_request)
+
+# note: a notion page is considered a block that can have block children, so page_id can be called
+func request_notion_retrieve_block_children(block_id: String): # GET
+	var endpoint_url: String = "https://api.notion.com/v1/blocks/" + block_id + "/children"
+	var send_request = notion_http.request(endpoint_url, notion_headers, HTTPClient.METHOD_GET)
+	check_request_error(send_request)
+	
+func check_request_error(send_request) -> void:
 	if send_request != OK:
 		print("Send request failed! :( Error Code: " + str(send_request))
+	
 
 func _on_notion_request_completed(result: int, response_code: int, headers: PackedStringArray, body: PackedByteArray) -> void:
 	var json = JSON.new()
