@@ -1,0 +1,25 @@
+[gd_scene load_steps=3 format=3 uid="uid://c5rua6hfyx2gq"]
+
+[ext_resource type="Script" path="res://notion blocks/rich_text.gd" id="1_pn17x"]
+[ext_resource type="PackedScene" uid="uid://cojfmel2gud0v" path="res://api manager/api_manager.tscn" id="2_qqlpj"]
+
+[node name="RichText" type="RichTextLabel"]
+anchors_preset = 10
+anchor_right = 1.0
+grow_horizontal = 2
+size_flags_horizontal = 3
+size_flags_vertical = 2
+text = "The quick brown fox jumped over the lazy dog."
+fit_content = true
+script = ExtResource("1_pn17x")
+
+[node name="TextEdit" type="TextEdit" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="APIManager" parent="." instance=ExtResource("2_qqlpj")]
