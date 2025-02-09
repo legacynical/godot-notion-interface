@@ -534,7 +534,9 @@ func _ready() -> void:
 	check_api_keys()
 	#request_notion_retrieve_page(notion_ids["EXPLORATION_LOG_PAGE_ID"])
 	#request_notion_retrieve_block_children(notion_ids["EXPLORATION_LOG_PAGE_ID"])
-	request_notion_append_block_children(notion_ids["EXPLORATION_LOG_PAGE_ID"], append_blocks_test)
+	#request_notion_append_block_children(notion_ids["EXPLORATION_LOG_PAGE_ID"], append_blocks_test)
+	request_notion_retrieve_block("1939b47ea53a80c08bd5cb978202d1fe")
+		# test block-id, made a paragraph with a bunch of mixed annotated text
 
 func load_notion_ids() -> void:
 	var file = FileAccess.open("res://.notion-ids", FileAccess.READ)
@@ -619,11 +621,17 @@ func request_notion_retrieve_page(page_id: String): # GET
 	var send_request = notion_http.request(endpoint_url, notion_headers, HTTPClient.METHOD_GET)
 	check_request_error(send_request)
 
+func request_notion_retrieve_block(block_id: String): # GET
+	var endpoint_url: String = "https://api.notion.com/v1/blocks/" + block_id
+	var send_request = notion_http.request(endpoint_url, notion_headers, HTTPClient.METHOD_GET)
+	check_request_error(send_request)
+
 # NOTE: a notion page is considered a block that can have block children, so page_id can be called
 func request_notion_retrieve_block_children(block_id: String): # GET
 	var endpoint_url: String = "https://api.notion.com/v1/blocks/" + block_id + "/children"
 	var send_request = notion_http.request(endpoint_url, notion_headers, HTTPClient.METHOD_GET)
 	check_request_error(send_request)
+
 
 func request_notion_append_block_children(block_id: String, blocks: PackedInt32Array = [], after: String = ""): # PATCH
 	var endpoint_url: String = "https://api.notion.com/v1/blocks/" + block_id + "/children"
